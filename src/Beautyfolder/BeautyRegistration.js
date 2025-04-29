@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, TextField, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -16,8 +16,30 @@ const Beautycategory = () => {
     serviceDate: today, 
     estimatedCost: '',
   });
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await response.json();
+        setServices(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,6 +68,9 @@ const Beautycategory = () => {
     }
   };
 
+  if (loading) return <div>Loading services...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <>
       <Box>
@@ -55,7 +80,7 @@ const Beautycategory = () => {
             <Paper sx={{ maxWidth: 700, p: 3, boxShadow: 3, height: 440 }}>
               <Box sx={{ backgroundColor: '#29b6f6', padding: 2, mb: 2 }}>
                 <Typography variant="h5" sx={{ textAlign: 'center', color: '#7b1fa2' }}>
-                <strong>Create a New Customer </strong>
+                  <strong>Create a New Customer </strong>
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', gap: 3 }}>
@@ -106,12 +131,13 @@ const Beautycategory = () => {
                     name="service"
                     value={formData.service}
                     onChange={handleChange}
+                    label="Service"
                   >
-                    <MenuItem value="haircut">Haircut</MenuItem>
-                    <MenuItem value="facial">Facial</MenuItem>
-                    <MenuItem value="makeup">Makeup</MenuItem>
-                    <MenuItem value="face-makeup">Pedicure</MenuItem>
-                    <MenuItem value="skin">Skin</MenuItem>
+                    {services.map((service) => (
+                      <MenuItem key={service.id} value={service.service_name}>
+                        {service.service_name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
@@ -134,24 +160,24 @@ const Beautycategory = () => {
               </Box>
 
               <Box sx={{ display: 'flex', gap: 3 }}>
-  <TextField
-    fullWidth
-    type="date"
-    margin="normal"
-    name="serviceDate"
-    value={formData.serviceDate}
-    onChange={handleChange}
-  />
-  <TextField
-    fullWidth
-    label="Estimated Cost"
-    type="number"
-    margin="normal"
-    name="estimatedCost"
-    value={formData.estimatedCost}
-    onChange={handleChange}
-  />
-</Box>
+                <TextField
+                  fullWidth
+                  type="date"
+                  margin="normal"
+                  name="serviceDate"
+                  value={formData.serviceDate}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  label="Estimated Cost"
+                  type="number"
+                  margin="normal"
+                  name="estimatedCost"
+                  value={formData.estimatedCost}
+                  onChange={handleChange}
+                />
+              </Box>
 
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Button type="submit" variant="contained" color="primary">

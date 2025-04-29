@@ -150,6 +150,63 @@ app.delete('/deletecustomer/:id', (req, res) => {
   });
 });
 
+// Update customer by ID
+// Update customer by ID
+app.put('/updatecustomer/:id', (req, res) => {
+    const registrationId = req.params.id;
+    const {
+      fullName,
+      phoneNumber,
+      email,
+      address,
+      service,
+      location,
+      serviceDate,
+      estimatedCost
+    } = req.body;
+  
+    const query = `
+      UPDATE registrations 
+      SET 
+        fullName = ?,
+        phoneNumber = ?,
+        email = ?,
+        address = ?,
+        service = ?,
+        location = ?,
+        serviceDate = ?,
+        estimatedCost = ?
+      WHERE id = ?
+    `;
+  
+    db.query(
+      query,
+      [
+        fullName,
+        phoneNumber,
+        email,
+        address,
+        service,
+        location,
+        serviceDate,
+        estimatedCost,
+        registrationId
+      ],
+      (err, results) => {
+        if (err) {
+          console.error('Error updating registration:', err);
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+  
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: 'Registration not found' });
+        }
+  
+        res.json({ message: 'Registration updated successfully' });
+      }
+    );
+  });
+
 // Start the server
 const PORT = 5000;
 app.listen(PORT, () => {

@@ -139,7 +139,7 @@ const BeautyTable = () => {
           <IconButton color="info" component={Link} to={`/beautyview/${user.id}`} size="small">
             <VisibilityIcon />
           </IconButton>
-          <IconButton color="secondary" component={Link} to="/beautyedit" size="small">
+          <IconButton color="secondary" component={Link} to={`/beautyedit/${user.id}`} size="small">
             <EditIcon />
           </IconButton>
           <IconButton color="error" size="small" onClick={() => handleDelete(user.id)}>

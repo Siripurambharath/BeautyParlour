@@ -31,7 +31,7 @@ const App = () => {
       <Route path="/beautyreg" element={<Beautyreg />} />
       <Route path="/beautytable" element={<Beautytable />} />
       <Route path="/beautyview/:id" element={<Beautyview />} />
-      <Route path="/beautyedit" element={<Beautyedit />} />
+      <Route path="/beautyedit/:id" element={<Beautyedit />} />
       <Route path="/beautylogin" element={<Beautylogin />} />
       <Route path="/beautycategory" element={<Beautycategory />} />
       <Route path="/beautyRegister" element={<BeautyRegistration />} />
